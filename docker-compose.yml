@@ -1,0 +1,102 @@
+version: '3.5'
+
+services:
+  frontend:
+    profiles: ["main", "dev", "frontend"]
+    build: 
+      context: src/frontend
+      dockerfile: Dockerfile
+    command: bash -c "if [ "$NODE_ENV" == "development" ]; then npm run dev; else npm run prod; fi"
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./src/frontend:/app
+      - type: bind
+        source: ./src/lib
+        target: /app/lib
+      - type: bind
+        source: ./services
+        target: /app/services
+    environment:
+      HOST: 0.0.0.0
+      PORT: 80
+      NODE_ENV: ${NODE_ENV}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      THEME_BG: ${THEME_BG}
+      TITLE: ${TITLE}
+    networks:
+      - statusnet
+  mon:
+    profiles: ["main", "dev"]
+    build: 
+      context: src/mon
+      dockerfile: Dockerfile
+    command: bash -c "if [ "$NODE_ENV" == "development" ]; then npm run dev; else npm run prod; fi"
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./src/mon:/app
+      - type: bind
+        source: ./services
+        target: /app/services
+      - type: bind
+        source: ./src/lib
+        target: /app/lib
+    environment:
+      HOST: 0.0.0.0
+      PORT: 80
+      NODE_ENV: ${NODE_ENV}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DISCORD_WEBHOOK: ${DISCORD_WEBHOOK}
+    networks:
+      - statusnet
+  mongodb:
+    profiles: ["main", "dev"]
+    image: mongo
+    restart: always
+    volumes:
+      - ./data/db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+    networks:
+      - statusnet
+  mongo-express:
+    profiles: ["main", "dev"]
+    depends_on:
+      - mongodb
+    image: mongo-express
+    restart: always
+    ports:
+      - 8002:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${DB_AUTH_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_AUTH_PASS}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASS}
+      ME_CONFIG_MONGODB_URL: mongodb://${DB_USER}:${DB_PASS}@mongodb:27017/
+    networks:
+      - statusnet
+  nginx: 
+    profiles: ["main"]
+    depends_on:
+      - frontend
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./src/nginx/nginx.conf:/etc/nginx/conf.d/status-checker.template
+      - ./src/nginx/run.sh:/app/run.sh
+    ports:
+      - ${PORT}:80
+    networks:
+      - statusnet
+    environment:
+      NGINX_DOMAIN_ROOT: ${NGINX_DOMAIN_ROOT}
+      NGINX_DOMAIN_DB: ${NGINX_DOMAIN_DB}
+    command: /app/run.sh 
+    
+networks:
+  statusnet:
+    driver: bridge

@@ -1,0 +1,58 @@
+{% extends "layouts/main.html" %}
+{% block content %}
+{% verbatim %}
+    <template v-if="status">
+      <div class="container w-full px-2 lg:px-0 lg:w-4/6 xl:w-3/6 mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center pb-4 pt-10">
+          <h1 class="text-3xl text-center md:text-left pb-5 md:pb-0">{{ title }}</h1>
+          <div class="rounded-sm text-center py-4 px-10 shadow-md" :class="{ 'bg-green-500': status.overall == 'OK', 'bg-orange-500': status.overall == 'PARTIAL_OUTAGE', 'bg-red-500': status.overall == 'MAJOR_OUTAGE' }">
+            <p class="text-xl flex items-center">
+              <span class="mr-2" :class="statusIcon(status.overall)"></span>
+              {{ statusText(status.overall) }}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center pb-4 pt-10">
+          <h4 class="text-2xl pr-5">Services</h4>
+          <p class="pt-1 italic text-xs text-gray-400">Updated every 60 seconds</p>
+        </div>
+        <div class="bg-zinc-600 rounded-sm shadow-md overflow-hidden">
+          <div class="even:bg-zinc-700" v-for="(service, index) in status.latest" :key="index">
+            <div class="flex items-center px-4 py-2">
+              <div class="flex items-center">
+                <span class="service-icon mr-2"></span>
+                <p class="text-xl">{{ service.title }}</p>
+              </div>
+              <div class="flex items-center ml-auto">
+                <p class="text-sm uppercase brightness-150" :class="{ 'text-green-500': service.status == 'OK', 'text-orange-500': service.status == 'PARTIAL_OUTAGE', 'text-red-500': service.status == 'MAJOR_OUTAGE' }">{{ statusText(service.status) }}</p>
+                <span class="service-status-icon mr-2"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center pb-4 pt-10">
+          <h4 class="text-2xl pr-5">Metrics</h4>
+          <p class="pt-1 italic text-xs text-gray-400">Past 30 days</p>
+        </div>
+        <div class="bg-gray-600 rounded-sm shadow-md overflow-hidden">
+          <table class="uptime-table">
+            <tbody>
+              <tr v-for="(day, index) in status.metrics" :key="index">
+                <td v-for="(metric, _index) in day.statuses" :key="_index">
+                  <span :class="{ 'bg-green-500': metric == 'OK', 'bg-orange-500': metric == 'PARTIAL_OUTAGE', 'bg-red-500': metric == 'MAJOR_OUTAGE' }"></span>
+                </td>
+                <th>{{ day.date }}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+        <footer>
+          <p class="text-center text-sm text-gray-400 py-6">
+            Powered by <a class="text-gray-300" href="https://github.com/leona/status-checker">status-checker</a>
+          </p>
+        </footer>
+      </div>
+    </template>
+{% endverbatim %}
+{% endblock %}

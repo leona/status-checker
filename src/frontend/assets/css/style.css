@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: white;
+  background: var(--main-bg-color);
+}
+
+.ok-icon {
+  background: url(../img/icons/tick.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width:20px;
+  height:20px;
+  display:inline-block;
+  filter:  brightness(0) invert(1);
+}
+
+.warn-icon {
+  background: url(../img/icons/warning.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width:20px;
+  height:20px;
+  display:inline-block;
+  filter:  brightness(0) invert(1);
+}
+
+.error-icon {
+  background: url(../img/icons/error.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width:20px;
+  height:20px;
+  display:inline-block;
+  filter:  brightness(0) invert(1);
+}
+
+.uptime-table {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  table-layout: auto;
+  width: 100%;
+  border-spacing:0;
+  border-collapse: collapse; 
+
+  tbody {
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    height:100%
+  }
+  
+  tr {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    text-align:center;
+  }
+  
+
+  td {
+    padding:0px;
+    height: 100%;
+
+    span {
+      display: inline-block;
+      width:100%;
+      height:100%
+    }
+  }
+
+  th {
+    font-size:9px;
+    font-weight:100;
+    padding:5px 0;
+  }
+
+  tr:nth-child(odd) {
+    td:nth-child(odd) {
+      opacity: 0.9
+    }
+  }
+
+  tr:nth-child(even) {
+    td:nth-child(even) {
+      opacity: 0.9
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .uptime-table {
+    th {
+      font-size:5px;
+    }
+  }
+}

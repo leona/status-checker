@@ -1,0 +1,22 @@
+{
+  "name": "mon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "mongodb": "^4.8.1",
+    "source-server-query": "^3.0.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "dev": "nodemon -e js,html app.js",
+    "staging": "node app.js",
+    "prod": "node app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
