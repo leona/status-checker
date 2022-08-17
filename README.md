@@ -34,7 +34,7 @@
 * `NGINX_DOMAIN_DB` - Domain of the mongodb-express instance e.g. status-db.example.com
 * `DISCORD_WEBHOOK` - Webhook URL to send alert notifications
 
-## V. Test cases
+## VI. Test cases
 See examples in `./services/examples`
 
 ```js
