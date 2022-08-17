@@ -18,7 +18,7 @@
 
 ## IV. Setup
 * Clone the repo
-* Create a .env file based off .env.example
+* Create a `.env` file in the root based off `.env.example`
 * Run `docker-compose --profile main up -d`
 
 ## V. Environment variables
